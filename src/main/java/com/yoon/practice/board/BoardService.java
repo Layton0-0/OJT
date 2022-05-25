@@ -1,8 +1,12 @@
 package com.yoon.practice.board;
 
-import com.yoon.practice.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BoardService {
@@ -12,4 +16,12 @@ public class BoardService {
     public Board save(Board board) {
         return boardRepository.save(board);
     }
+
+    public Page<Board> findAll(Pageable pageable){
+        return boardRepository.findAll(pageable);
+    }
+
+    public Board boardFromUser(String userId){
+        return boardRepository.boardFromUser(userId);
+    };
 }
