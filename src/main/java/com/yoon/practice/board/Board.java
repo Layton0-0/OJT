@@ -34,7 +34,7 @@ public class Board {
 
     @PrePersist
     public void createdAt(){
-        boardRegdate = LocalDateTime.now();
+        this.boardRegdate = LocalDateTime.now();
     }
 
     @Column
