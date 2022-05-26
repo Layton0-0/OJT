@@ -16,27 +16,33 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 public class Board {
+    // PK
     @Column
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardCode;
 
+    // 게시판 제목
     @Column
     private String boardTitle;
 
+    // 게시판 내용
     @Column
     private String boardContent;
 
+    // 게시판 작성자
     @ManyToOne
     @JoinColumn(name="user_id")
     @JsonBackReference
     private User user;
 
+    // 등록일 초기화
     @PrePersist
     public void createdAt(){
         this.boardRegdate = LocalDateTime.now();
     }
 
+    // 게시판 등록일
     @Column
     private LocalDateTime boardRegdate;
 }

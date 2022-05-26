@@ -12,9 +12,4 @@ import org.springframework.stereotype.Repository;
 public interface BoardRepository extends JpaRepository<Board, Long> {
     @Override
     Page<Board> findAll(Pageable pageable);
-
-    @Query(
-            value="select * from Board where user_id = :userId"
-    )
-    Board boardFromUser(@Param("userId") String userId);
 }

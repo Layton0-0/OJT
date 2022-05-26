@@ -21,7 +21,11 @@ public class BoardService {
         return boardRepository.findAll(pageable);
     }
 
-    public Board boardFromUser(String userId){
-        return boardRepository.boardFromUser(userId);
+    public void deleteById(Long boardCode){
+        boardRepository.deleteById(boardCode);
+    };
+
+    public Board getReferenceById(Long boardCode){
+        return boardRepository.getReferenceById(boardCode);
     };
 }
