@@ -21,6 +21,10 @@ public class BoardService {
         return boardRepository.findAll(pageable);
     }
 
+    public List<Board> findAll(){
+        return boardRepository.findAll();
+    }
+
     public void deleteById(Long boardCode){
         boardRepository.deleteById(boardCode);
     };

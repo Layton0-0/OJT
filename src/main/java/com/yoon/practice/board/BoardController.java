@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/board")
@@ -72,6 +73,25 @@ public class BoardController {
         return new ResponseEntity<>(dataResponse, headers, HttpStatus.OK);
     }
 
+    // pageable 객체 사용 안한 페이징
+    @GetMapping("/read-page")
+    public ResponseEntity<DataResponse> readPageByPage(int page){
+        PagingObject pagingObject = new PagingObject();
+        DataResponse dataResponse = new DataResponse();
+        HttpHeaders headers = new HttpHeaders();
+
+        List<Board> boardList = boardService.findAll();
+        pagingObject.setPage(page);
+        pagingObject.setTotalPage(boardList.size()/10 + 1);
+        pagingObject.setTotalRecordCount(boardList.size());
+        pagingObject.setData(boardList.subList(pagingObject.getFirstRecord(), pagingObject.getLastRecord()));
+
+        dataResponse.setStatus(StatusEnum.OK.statusCode);
+        dataResponse.setMessage(StatusEnum.OK.code);
+        dataResponse.setData(pagingObject);
+        return new ResponseEntity<>(dataResponse, headers, HttpStatus.OK);
+    }
+
     // Update(다시)
     @PutMapping("/update")
     public ResponseEntity<DataResponse> updateBoard(@ModelAttribute Board newBoard, String userId){
@@ -99,8 +119,6 @@ public class BoardController {
             return new ResponseEntity<>(dataResponse, headers, HttpStatus.NOT_FOUND);
         }
 
-
-
     }
 
     // Delete
@@ -126,4 +144,5 @@ public class BoardController {
             return new ResponseEntity<>(dataResponse, headers, HttpStatus.NOT_FOUND);
         }
     }
+
 }
