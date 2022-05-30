@@ -1,6 +1,7 @@
 package com.yoon.practice.board;
 
 import com.google.gson.JsonObject;
+import com.yoon.practice.error.user.DuplicateIdException;
 import com.yoon.practice.user.User;
 import com.yoon.practice.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class BoardController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/exception")
+    public String exception01(){
+        throw new DuplicateIdException();
+    }
 
     // Create
     @PostMapping("/create")

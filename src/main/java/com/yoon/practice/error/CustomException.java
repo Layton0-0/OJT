@@ -1,9 +1,11 @@
 package com.yoon.practice.error;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
+@Getter
 @NoArgsConstructor
 public class CustomException extends RuntimeException{
     @Serial
