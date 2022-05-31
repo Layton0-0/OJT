@@ -12,8 +12,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,14 +30,14 @@ public class BoardController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/exception")
-    public String exception01(){
-        throw new DuplicateIdException();
+    @PostMapping("/exception")
+    public String exception01(@ModelAttribute @Valid Board board){
+        return "exception";
     }
 
     // Create
     @PostMapping("/create")
-    public ResponseEntity<DataResponse> createBoard(@ModelAttribute Board board, String userId){
+    public ResponseEntity<DataResponse> createBoard(@ModelAttribute @Valid Board board, String userId, BindingResult bindingResult){
         // 유저 foreign key 연결
         board.setUser(userService.findByUserId(userId));
         boardService.save(board);
