@@ -1,6 +1,8 @@
 package com.yoon.practice.board;
 
 import com.google.gson.JsonObject;
+import com.yoon.practice.error.ErrorResponse;
+import com.yoon.practice.error.board.DeleteByUnauthUserException;
 import com.yoon.practice.error.user.DuplicateIdException;
 import com.yoon.practice.user.User;
 import com.yoon.practice.user.UserService;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +40,7 @@ public class BoardController {
 
     // Create
     @PostMapping("/create")
-    public ResponseEntity<DataResponse> createBoard(@ModelAttribute @Valid Board board, String userId, BindingResult bindingResult){
+    public ResponseEntity<DataResponse> createBoard(@ModelAttribute @Valid Board board, String userId){
         // 유저 foreign key 연결
         board.setUser(userService.findByUserId(userId));
         boardService.save(board);
@@ -132,7 +135,7 @@ public class BoardController {
 
     // Delete
     @DeleteMapping("/delete")
-    public ResponseEntity<DataResponse> deleteBoard(Long boardCode, String userId, @PageableDefault(page=0, size=10) Pageable pageable){
+    public ResponseEntity<DataResponse> deleteBoard(@RequestParam Long boardCode, @RequestParam String userId, @PageableDefault(page=0, size=10) Pageable pageable){
         Board board = boardService.getReferenceById(boardCode);
         User user = board.getUser();
 
@@ -147,10 +150,12 @@ public class BoardController {
             dataResponse.setData(boardService.findAll(pageable));
             return new ResponseEntity<>(dataResponse, headers, HttpStatus.OK);
         } else {
-            dataResponse.setStatus(StatusEnum.NOT_FOUND.statusCode);
-            dataResponse.setMessage(StatusEnum.NOT_FOUND.code);
-            dataResponse.setData(boardService.findAll(pageable));
-            return new ResponseEntity<>(dataResponse, headers, HttpStatus.NOT_FOUND);
+            ErrorResponse.CustomFieldError customFieldError= new ErrorResponse.CustomFieldError("Board", userId, "작성자가 다릅니다");
+            throw new DeleteByUnauthUserException(customFieldError);
+//            dataResponse.setStatus(StatusEnum.NOT_FOUND.statusCode);
+//            dataResponse.setMessage(StatusEnum.NOT_FOUND.code);
+//            dataResponse.setData(boardService.findAll(pageable));
+//            return new ResponseEntity<>(dataResponse, headers, HttpStatus.NOT_FOUND);
         }
     }
 

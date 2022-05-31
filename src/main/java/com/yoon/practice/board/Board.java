@@ -26,19 +26,18 @@ public class Board {
 
     // 게시판 제목
     @Column
-    @NotEmpty(message = "제목을 입력해주세요")
+    @NotNull(message = "제목을 입력해주세요")
     private String boardTitle;
 
     // 게시판 내용
     @Column
-    @NotEmpty(message = "내용을 입력해주세요")
+    @NotNull(message = "내용을 입력해주세요")
     private String boardContent;
 
     // 게시판 작성자
     @ManyToOne
     @JoinColumn(name="user_id")
     @JsonBackReference
-    @NotEmpty(message = "로그인 해주세요")
     private User user;
 
     // 등록일 초기화

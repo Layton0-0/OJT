@@ -1,6 +1,9 @@
 package com.yoon.practice.user;
 
 import com.yoon.practice.board.DataResponse;
+import com.yoon.practice.error.ErrorResponse;
+import com.yoon.practice.error.user.DuplicateIdException;
+import com.yoon.practice.error.user.LoginFailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +38,11 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
+        if(userService.findByUserId(user.getUserId()) != null){
+            ErrorResponse.CustomFieldError customFieldError= new ErrorResponse.CustomFieldError("User", user.getUserId(), "아이디 중복");
+            throw new DuplicateIdException(customFieldError);
+        }
+
         // UserId가 게시판의 userId와 같은지 확인 후 저장
         if(userService.save(user) != null){
             dataResponse.setStatus(com.yoon.practice.user.StatusEnum.OK.statusCode);
@@ -57,7 +65,12 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        // UserId가 게시판의 userId와 같은지 확인 후 저장
+        if(userService.findByUserId(userId) == null){
+            ErrorResponse.CustomFieldError customFieldError= new ErrorResponse.CustomFieldError("User", userId, "아이디가 존재하지 않습니다");
+            throw new LoginFailException(customFieldError);
+        }
+
+        // Id에 Pw가 맞는지 확인 후 로그인 통과
         if(passwordEncoder.matches(userPw, user.getUserPw())){
             dataResponse.setStatus(com.yoon.practice.user.StatusEnum.OK.statusCode);
             dataResponse.setMessage(com.yoon.practice.user.StatusEnum.OK.code);
@@ -65,9 +78,11 @@ public class UserController {
             dataResponse.setData(user.getUserId());
             return new ResponseEntity<>(dataResponse, headers, HttpStatus.OK);
         } else {
-            dataResponse.setStatus(com.yoon.practice.user.StatusEnum.NOT_FOUND.statusCode);
-            dataResponse.setMessage(StatusEnum.NOT_FOUND.code);
-            return new ResponseEntity<>(dataResponse, headers, HttpStatus.NOT_FOUND);
+            ErrorResponse.CustomFieldError customFieldError= new ErrorResponse.CustomFieldError("User", userPw, "비밀번호가 틀립니다");
+            throw new LoginFailException(customFieldError);
+//            dataResponse.setStatus(com.yoon.practice.user.StatusEnum.NOT_FOUND.statusCode);
+//            dataResponse.setMessage(StatusEnum.NOT_FOUND.code);
+//            return new ResponseEntity<>(dataResponse, headers, HttpStatus.NOT_FOUND);
         }
     }
 

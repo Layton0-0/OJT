@@ -1,6 +1,7 @@
 package com.yoon.practice.error;
 
 import lombok.*;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
@@ -41,17 +42,32 @@ public class ErrorResponse {
         return this;
     }
 
-    public ErrorResponse errors(Errors errors) {
+    public ErrorResponse errors(BindingResult errors) {
         setFieldErrors(errors.getFieldErrors());
         return this;
     }
 
+    public ErrorResponse error(CustomFieldError error) {
+        setFieldError(error);
+        return this;
+    }
+
+    // 여러 필드일 경우
     public void setFieldErrors(List<FieldError> fieldErrors){
         this.fieldErrors = new ArrayList<>();
 
         fieldErrors.forEach(error -> {
-            this.fieldErrors.add(new CustomFieldError(error.getCodes()[0], error.getRejectedValue()));
+            this.fieldErrors.add(new CustomFieldError(error.getCodes()[0], error.getRejectedValue(), error.getDefaultMessage()));
         });
+
+    }
+
+    // 하나일 경우
+    public void setFieldError(CustomFieldError customFieldError){
+        this.fieldErrors = new ArrayList<>();
+
+        this.fieldErrors.add(customFieldError);
+
 
     }
 
@@ -60,5 +76,6 @@ public class ErrorResponse {
     public static class CustomFieldError {
         private String field;
         private Object value;
+        private String message;
     }
 }
