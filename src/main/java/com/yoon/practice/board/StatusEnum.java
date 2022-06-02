@@ -6,8 +6,8 @@ public enum StatusEnum {
     NOT_FOUND(404, "NOT_FOUND"),
     INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR");
 
-    int statusCode;
-    String code;
+    public int statusCode;
+    public String code;
 
     StatusEnum(int statusCode, String code) {
         this.statusCode = statusCode;
