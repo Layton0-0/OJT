@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -21,8 +22,9 @@ public class Board {
     // PK
     @Column
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardCode;
+    @GeneratedValue(generator = "boardGenerator")
+    @GenericGenerator(name = "boardGenerator", strategy = "com.yoon.practice.generator.CustomGenerator", parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "B"))
+    private String boardCode;
 
     // 게시판 제목
     @Column

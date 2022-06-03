@@ -25,11 +25,11 @@ public class BoardService {
         return boardRepository.findAll();
     }
 
-    public void deleteById(Long boardCode){
+    public void deleteById(String boardCode){
         boardRepository.deleteById(boardCode);
     };
 
-    public Board getReferenceById(Long boardCode){
+    public Board getReferenceById(String boardCode){
         return boardRepository.getReferenceById(boardCode);
     };
 }

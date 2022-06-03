@@ -73,7 +73,7 @@ public class BoardController {
     }
 
     @GetMapping("/read-one")
-    public ResponseEntity<DataResponse>  readOneBoard(Long boardCode){
+    public ResponseEntity<DataResponse>  readOneBoard(String boardCode){
         DataResponse dataResponse = new DataResponse();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
@@ -135,7 +135,7 @@ public class BoardController {
 
     // Delete
     @DeleteMapping("/delete")
-    public ResponseEntity<DataResponse> deleteBoard(@RequestParam Long boardCode, @RequestParam String userId, @PageableDefault(page=0, size=10) Pageable pageable){
+    public ResponseEntity<DataResponse> deleteBoard(@RequestParam String boardCode, @RequestParam String userId, @PageableDefault(page=0, size=10) Pageable pageable){
         Board board = boardService.getReferenceById(boardCode);
         User user = board.getUser();
 
